@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PHero } from '@/components/blocks'
 import { CartView, type CartItem } from '@/components/cart'
 import { products } from '@/lib/content'
 import { href, tr } from '@/lib/i18n'
@@ -18,13 +19,17 @@ const Cart = async () => {
       : [{ slug: p.slug, title: tr(p.title, lang), price: p.price, stock: p.stock, photo: p.photos[0], href: href(lang, `/shop/p/${p.slug}`) }],
   )
   return (
-    <section className="sec wrap narrow">
-      <h1>{t.cart.title}</h1>
-      <CartView items={items} lang={lang} t={t.cart} />
-      <p className="more">
-        <Link href={href(lang, '/shop')}>← {t.cart.back}</Link>
-      </p>
-    </section>
+    <>
+      <PHero small label={t.nav.shop} title={t.cart.title} />
+      <section className="pad cart">
+        <CartView items={items} lang={lang} t={t.cart} />
+        <p>
+          <Link className="link" href={href(lang, '/shop')}>
+            ← {t.cart.back}
+          </Link>
+        </p>
+      </section>
+    </>
   )
 }
 

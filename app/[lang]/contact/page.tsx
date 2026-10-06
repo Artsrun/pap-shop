@@ -1,3 +1,4 @@
+import { PHero } from '@/components/blocks'
 import { Cta } from '@/components/ui'
 import { commissionHref } from '@/lib/content'
 import { pageMeta } from '@/lib/meta'
@@ -18,55 +19,61 @@ const Contact = async () => {
     ['Telegram', links.telegram],
     ['WhatsApp', links.whatsapp],
   ].filter(([, url]) => url)
+  const out = { target: '_blank', rel: 'noopener noreferrer' }
 
   return (
-    <section className="sec wrap narrow">
-      <h1>{c.title}</h1>
-      <dl className="facts">
-        <div>
-          <dt>{c.email}</dt>
+    <>
+      <PHero label={t.nav.contact} title={c.title} text={c.visits} photo="v3-contact">
+        <Cta href={commissionHref(lang)}>{t.form.title}</Cta>
+      </PHero>
+      <section className="cells contact-grid">
+        <dl className="cell rv">
+          <dt className="label">{c.email}</dt>
           <dd>
             <a href={links.email}>{site.email}</a>
           </dd>
-        </div>
-        <div>
-          <dt>{c.phone}</dt>
+        </dl>
+        <dl className="cell rv">
+          <dt className="label">{c.phone}</dt>
           <dd>
             <a href={links.phone}>{site.phone}</a>
           </dd>
-        </div>
-        <div>
-          <dt>{c.studio}</dt>
+        </dl>
+        <dl className="cell rv">
+          <dt className="label">{c.studio}</dt>
           <dd>
             {c.address}
             <br />
-            {c.visits}
+            <span style={{ color: 'var(--muted)' }}>{c.visits}</span>
             <br />
             {c.map}:{' '}
-            <a href={links.googleMaps} target="_blank" rel="noopener noreferrer">
-              Google
+            <a href={links.googleMaps} {...out}>
+              Google ↗
             </a>{' '}
             ·{' '}
-            <a href={links.yandexMaps} target="_blank" rel="noopener noreferrer">
-              Yandex
+            <a href={links.yandexMaps} {...out}>
+              Yandex ↗
             </a>
           </dd>
-        </div>
-        <div>
-          <dt>{c.follow}</dt>
-          <dd className="social">
+        </dl>
+        <dl className="cell rv">
+          <dt className="label">{c.follow}</dt>
+          <dd>
             {follow.map(([name, url]) => (
-              <a key={name} href={url} target="_blank" rel="noopener noreferrer">
-                {name}
-              </a>
+              <span key={name}>
+                <a href={url} {...out}>
+                  {name} ↗
+                </a>
+                <br />
+              </span>
             ))}
           </dd>
-        </div>
-      </dl>
-      <div className="actions">
+        </dl>
+      </section>
+      <div className="after">
         <Cta href={commissionHref(lang)}>{t.form.title}</Cta>
       </div>
-    </section>
+    </>
   )
 }
 

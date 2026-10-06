@@ -1,6 +1,6 @@
-import { Band, ProjectGrid } from '@/components/blocks'
-import { Cta, Hero, Section, Steps, Tags } from '@/components/ui'
-import { commissionHref } from '@/lib/content'
+import { CommissionCta, PHero, RestosList } from '@/components/blocks'
+import { Band, Cells, Cta, Feature, Strip } from '@/components/ui'
+import { commissionHref, projects } from '@/lib/content'
 import { href } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
 import { getT } from '@/lib/t'
@@ -13,28 +13,44 @@ export const generateMetadata = async () => {
 const Tiles = async () => {
   const { lang, t } = await getT()
   const s = t.tiles
+  const hasProjects = projects.some((p) => p.kind === 'tiles')
   return (
     <>
-      <Hero title={s.title} text={s.text} photo="detail-1">
+      <PHero label={`02 — ${t.nav.tiles}`} title={s.title} text={s.text} photo="v3-tiles">
         <Cta href={commissionHref(lang, 'tiles')}>{s.cta}</Cta>
-        <Cta href={href(lang, '/contact')} kind="alt">
+        <Cta plain href={href(lang, '/contact')}>
           {s.cta2}
         </Cta>
-      </Hero>
-      <Section title={s.forTitle}>
-        <Tags items={s.for} />
-      </Section>
-      <Section title={s.customTitle}>
-        <Tags items={s.custom} />
-      </Section>
-      <ProjectGrid kind="tiles" title={s.projectsTitle} empty={s.projectsEmpty} />
-      <Section title={s.stepsTitle}>
-        <Steps items={s.steps} />
-        <div className="actions">
-          <Cta href={commissionHref(lang, 'tiles')}>{s.cta}</Cta>
-        </div>
-      </Section>
-      <Band />
+      </PHero>
+      <Band title={s.forTitle} count={s.for.length} />
+      <Cells items={s.for} />
+      <Band title={s.customTitle} count={s.custom.length} />
+      <Cells items={s.custom} />
+      {hasProjects ? (
+        <>
+          <Band title={s.projectsTitle} />
+          <RestosList kind="tiles" />
+        </>
+      ) : (
+        <Feature photo="v3-studio-bowl" title={s.projectsTitle} text={s.projectsEmpty}>
+          <Cta plain href={href(lang, '/contact')}>
+            {t.nav.contact}
+          </Cta>
+        </Feature>
+      )}
+      <Band title={s.stepsTitle} count={s.steps.length} />
+      <Cells steps items={s.steps} />
+      <div className="after">
+        <Cta href={commissionHref(lang, 'tiles')}>{s.cta}</Cta>
+      </div>
+      <Strip
+        photos={[
+          ['v3-tiles-1', ''],
+          ['v3-tiles-2', ''],
+          ['v3-tiles-3', ''],
+        ]}
+      />
+      <CommissionCta />
     </>
   )
 }

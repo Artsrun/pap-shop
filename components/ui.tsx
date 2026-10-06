@@ -1,104 +1,132 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import type { Product, Work } from '@/lib/content'
+import type { Product } from '@/lib/content'
 import type { Dict } from '@/lib/dict'
-import { href, money, tr, type Locale } from '@/lib/i18n'
+import { money, type Locale } from '@/lib/i18n'
 
-// Pure building blocks: no data fetching, safe in Server and Client Components.
+// Pure building blocks in Lusine's markup: no data fetching, safe in Server and Client Components.
 
-type PhotoProps = { src: string; sizes: string; alt?: string; eager?: boolean; className?: string }
+/** 1 → "01" */
+export const pad = (n: number) => String(n).padStart(2, '0')
 
-export const Photo = ({ src, sizes, alt = '', eager, className = '' }: PhotoProps) => (
+type PicProps = { src: string; sizes: string; alt?: string; eager?: boolean }
+
+/** Photo from /public/img (name without .jpg), filling its box. */
+export const Pic = ({ src, sizes, alt = '', eager }: PicProps) => (
+  <Image
+    src={`/img/${src}.jpg`}
+    alt={alt}
+    fill
+    sizes={sizes}
+    {...(eager && { loading: 'eager' as const, fetchPriority: 'high' as const })}
+  />
+)
+
+/** <figure> with a photo: Lusine's boxes (.hero__img, .world figure, .strip figure…) set the size. */
+export const Fig = ({ className, ...p }: PicProps & { className?: string }) => (
+  <figure className={className}>
+    <Pic {...p} />
+  </figure>
+)
+
+/** Neutral 4:5 photo box (product gallery, cart). */
+export const Photo = ({ className = '', ...p }: PicProps & { className?: string }) => (
   <div className={`ph ${className}`}>
-    <Image
-      src={`/img/${src}.jpg`}
-      alt={alt}
-      fill
-      sizes={sizes}
-      {...(eager && { loading: 'eager' as const, fetchPriority: 'high' as const })}
-    />
+    <Pic {...p} />
   </div>
 )
 
-type CtaProps = { href: string; kind?: 'ink' | 'alt' | 'buy'; children: ReactNode }
+type CtaProps = { href: string; plain?: boolean; small?: boolean; className?: string; children: ReactNode }
 
-/** ink = commission journey, buy = shop journey, alt = secondary. */
-export const Cta = ({ href, kind = 'ink', children }: CtaProps) => (
-  <Link className={`btn ${kind}`} href={href}>
-    {children}
-    {kind !== 'buy' && <span aria-hidden="true">→</span>}
-  </Link>
+/** Black button = main action, plain = secondary. External links open in a new tab. */
+export const Cta = ({ href, plain, small, className = '', children }: CtaProps) => {
+  const cls = `btn${plain ? '' : ' btn--acid'}${small ? '' : ' btn--lg'} ${className}`.trim()
+  return href.startsWith('http') ? (
+    <a className={cls} href={href} target="_blank" rel="noopener noreferrer">
+      {children} ↗
+    </a>
+  ) : (
+    <Link className={cls} href={href}>
+      {children} {href.startsWith('#') ? '↓' : '→'}
+    </Link>
+  )
+}
+
+/** Grey title bar with a number: "Selected works 04". */
+export const Band = ({ title, count, link }: { title: string; count?: number; link?: { href: string; label: string } }) => (
+  <div className="band">
+    <h2 className="display">
+      {title} {count !== undefined && <span className="label">{pad(count)}</span>}
+    </h2>
+    {link && (
+      <Link className="link" href={link.href}>
+        {link.label} →
+      </Link>
+    )}
+  </div>
 )
 
-type HeroProps = { title: string; text: string; photo: string; alt?: string; children?: ReactNode }
+/** Numbered cells; `steps` adds the arrows between them. */
+export const Cells = ({ items, steps }: { items: string[]; steps?: boolean }) => (
+  <section className={steps ? 'cells steps' : 'cells'}>
+    {items.map((x, i) => (
+      <div key={x} className="cell rv">
+        <span className="num">{pad(i + 1)}</span>
+        <b>{x}</b>
+      </div>
+    ))}
+  </section>
+)
 
-export const Hero = ({ title, text, photo, alt, children }: HeroProps) => (
-  <section className="hero">
-    <Photo src={photo} alt={alt} sizes="(max-width: 860px) 100vw, 50vw" eager className="hero-ph" />
-    <div className="hero-txt">
-      <h1>{title}</h1>
-      <p className="lead">{text}</p>
-      {children && <div className="actions">{children}</div>}
+type FeatureProps = { photo: string; alt?: string; title: string; text: string; children?: ReactNode }
+
+/** Square photo + text block. */
+export const Feature = ({ photo, alt, title, text, children }: FeatureProps) => (
+  <section className="feature">
+    <Fig className="rv" src={photo} alt={alt} sizes="(max-width: 680px) 100vw, 50vw" />
+    <div className="rv">
+      <h2 className="display">{title}</h2>
+      <p>{text}</p>
+      {children && <div className="row">{children}</div>}
     </div>
   </section>
 )
 
-export const Section = ({ title, className = '', children }: { title?: string; className?: string; children: ReactNode }) => (
-  <section className={`sec wrap ${className}`}>
-    {title && <h2>{title}</h2>}
-    {children}
+/** Three square studio photos in a row. */
+export const Strip = ({ photos, label }: { photos: [src: string, alt: string][]; label?: string }) => (
+  <section className="strip" aria-label={label}>
+    {photos.map(([src, alt]) => (
+      <Fig key={src} className="rv" src={src} alt={alt} sizes="33vw" />
+    ))}
   </section>
+)
+
+type TileProps = { href: string; photo: string; title: string; note?: string }
+
+/** Grid tile for works and products (.works / .works--3). */
+export const WorkTile = ({ href, photo, title, note }: TileProps) => (
+  <Link className="work rv" href={href}>
+    <Fig src={photo} alt={title} sizes="(max-width: 1000px) 50vw, 33vw" />
+    <span>
+      {title} <i>→</i>
+    </span>
+    {note && <small>{note}</small>}
+  </Link>
 )
 
 type Chip = { href: string; label: string; current?: boolean }
 
-/** Category filter row (shop + art). */
+/** Category filter row: real links, so every filter has its own URL. */
 export const Chips = ({ label, items }: { label: string; items: Chip[] }) => (
   <nav className="chips" aria-label={label}>
     {items.map((i) => (
-      <Link key={i.href} href={i.href} aria-current={i.current ? 'page' : undefined}>
+      <Link key={i.href} className="chip" href={i.href} aria-current={i.current ? 'page' : undefined}>
         {i.label}
       </Link>
     ))}
   </nav>
 )
 
-export const Tags = ({ items }: { items: string[] }) => (
-  <ul className="tags">
-    {items.map((i) => (
-      <li key={i}>{i}</li>
-    ))}
-  </ul>
-)
-
-export const Steps = ({ items }: { items: string[] }) => (
-  <ol className="steps">
-    {items.map((i) => (
-      <li key={i}>{i}</li>
-    ))}
-  </ol>
-)
-
-const cardSizes = '(max-width: 600px) 50vw, (max-width: 1100px) 33vw, 25vw'
-
-export const WorkCard = ({ work, lang }: { work: Work; lang: Locale }) => (
-  <Link className="card" href={href(lang, `/art/${work.slug}`)}>
-    <Photo src={work.photos[0]} sizes={cardSizes} />
-    <span>{tr(work.title, lang)}</span>
-  </Link>
-)
-
 export const priceLabel = (p: Product, lang: Locale, t: Dict['shop']) =>
   p.stock < 1 ? t.soldOut : p.price === null ? t.onRequest : money(p.price, lang)
-
-export const ProductCard = ({ p, lang, t }: { p: Product; lang: Locale; t: Dict['shop'] }) => (
-  <Link className="card" href={href(lang, `/shop/p/${p.slug}`)}>
-    <Photo src={p.photos[0]} sizes={cardSizes} />
-    <span>{tr(p.title, lang)}</span>
-    <small>
-      {priceLabel(p, lang, t)}
-      {p.kind === 'unique' && ` · ${t.unique}`}
-    </small>
-  </Link>
-)

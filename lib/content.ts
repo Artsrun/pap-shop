@@ -49,15 +49,15 @@ export type Project = {
   slug: string
   kind: 'restaurant' | 'tiles'
   name: string
-  city: string
-  year: number
-  cover: string
-  gallery: string[]
-  concept: L
-  collection?: L // restaurant: pieces and counts
-  tile?: L // tiles: shape, size
-  pattern?: L
-  materials?: L
+  label: L // short line under the name: city or cuisine
+  cover: string // wide photo for the page banner (file in /public/img, no .jpg)
+  logo?: string
+  instagram?: string // handle without @
+  closed?: boolean
+  year?: number
+  concept: L // one-sentence description
+  facts: { label: L; value: L }[] // "at a glance" cells
+  pieces: { photo: string; work: string }[] // carousel: photo + the Art & Decor work it shows
 }
 
 const title = {
@@ -90,7 +90,73 @@ export const products: Product[] = [
   { slug: 'bronze-vessel', title: title.bronze, category: 'decor', photos: ['work-06'], work: 'bronze-vessel', ...unique },
 ]
 
-export const projects: Project[] = []
+const yerevan = { en: 'Yerevan', hy: 'Երևան', ru: 'Ереван', de: 'Jerewan' }
+const cuisine = { en: 'Cuisine', hy: 'Խոհանոց', ru: 'Кухня', de: 'Küche' }
+
+// Restaurant case studies (content from Lusine's v3 design). Texts: hy original, en/ru/de translated.
+export const projects: Project[] = [
+  {
+    slug: 'zula', kind: 'restaurant', name: 'Zula', label: yerevan, cover: 'r-zula', logo: 'logo-zula', instagram: 'zulayerevan',
+    concept: {
+      en: 'Modern Armenian cuisine, rooted in Armenian heritage and reimagined for today.',
+      hy: 'Ժամանակակից հայկական խոհանոց՝ արմատավորված հայկական ժառանգության մեջ և վերաիմաստավորված այսօրվա համար։',
+      ru: 'Современная армянская кухня, укоренённая в армянском наследии и переосмысленная для сегодняшнего дня.',
+      de: 'Moderne armenische Küche, verwurzelt im armenischen Erbe und neu gedacht für heute.',
+    },
+    facts: [
+      { label: cuisine, value: { en: 'Modern Armenian', hy: 'Ժամանակակից հայկական', ru: 'Современная армянская', de: 'Modern armenisch' } },
+      { label: { en: 'Address', hy: 'Հասցե', ru: 'Адрес', de: 'Adresse' }, value: { en: '11/1 Aram St, Yerevan', hy: 'Արամի փ. 11/1, Երևան', ru: 'ул. Арама 11/1, Ереван', de: 'Aram-Str. 11/1, Jerewan' } },
+      { label: { en: 'Hours', hy: 'Ժամեր', ru: 'Часы', de: 'Öffnungszeiten' }, value: { en: '08:00 – 00:00' } },
+    ],
+    pieces: [{ photo: 'r-zula-1', work: 'wide-bowl' }, { photo: 'r-zula-2', work: 'wide-bowl' }, { photo: 'r-zula-3', work: 'wide-bowl' }],
+  },
+  {
+    slug: 'kuwa-izakaya', kind: 'restaurant', name: 'Kuwa Izakaya', label: { en: 'Izakaya', hy: 'Իզակայա', ru: 'Идзакая', de: 'Izakaya' },
+    cover: 'r-kuwa-izakaya', logo: 'logo-kuwa-izakaya', instagram: 'kuwaizakaya', closed: true,
+    concept: {
+      en: 'A Japanese izakaya with small plates and a table made for sharing.',
+      hy: 'Ճապոնական իզակայա՝ փոքր ուտեստներով և կիսելու համար նախատեսված սեղանով։',
+      ru: 'Японская идзакая с небольшими блюдами и столом, за которым принято делиться.',
+      de: 'Eine japanische Izakaya mit kleinen Gerichten und einem Tisch zum Teilen.',
+    },
+    facts: [
+      { label: cuisine, value: { en: 'Japanese izakaya', hy: 'Ճապոնական իզակայա', ru: 'Японская идзакая', de: 'Japanische Izakaya' } },
+      { label: { en: 'Status', hy: 'Կարգավիճակ', ru: 'Статус', de: 'Status' }, value: { en: 'The restaurant is now closed', hy: 'Ռեստորանն այժմ փակ է', ru: 'Ресторан сейчас закрыт', de: 'Das Restaurant ist inzwischen geschlossen' } },
+    ],
+    pieces: [{ photo: 'r-kuwa-izakaya-1', work: 'pierced-bowl' }, { photo: 'r-kuwa-izakaya-2', work: 'pierced-bowl' }, { photo: 'r-kuwa-izakaya-3', work: 'pierced-bowl' }],
+  },
+  {
+    slug: 'nor-aleppo', kind: 'restaurant', name: 'Nor Aleppo', label: yerevan, cover: 'r-nor-aleppo', logo: 'logo-nor-aleppo', instagram: 'noraleppo.yvn',
+    concept: {
+      en: 'Eastern cuisine with a rich mix of flavours, textures and aromas.',
+      hy: 'Արևելյան խոհանոց՝ համերի, ֆակտուրաների և բույրերի հարուստ համադրությամբ։',
+      ru: 'Восточная кухня с богатым сочетанием вкусов, текстур и ароматов.',
+      de: 'Orientalische Küche mit einer reichen Mischung aus Aromen, Texturen und Düften.',
+    },
+    facts: [
+      { label: cuisine, value: { en: 'Eastern', hy: 'Արևելյան', ru: 'Восточная', de: 'Orientalisch' } },
+      { label: { en: 'Address', hy: 'Հասցե', ru: 'Адрес', de: 'Adresse' }, value: { en: '19/21 Saryan St, Yerevan', hy: 'Սարյան փ. 19/21, Երևան', ru: 'ул. Сарьяна 19/21, Ереван', de: 'Sarjan-Str. 19/21, Jerewan' } },
+      { label: { en: 'Hours', hy: 'Ժամեր', ru: 'Часы', de: 'Öffnungszeiten' }, value: { en: '11:00 – 23:00' } },
+    ],
+    pieces: [{ photo: 'r-nor-aleppo-1', work: 'tulip-pot' }, { photo: 'r-nor-aleppo-2', work: 'tulip-pot' }, { photo: 'r-nor-aleppo-3', work: 'tulip-pot' }],
+  },
+  {
+    slug: 'lavash-1', kind: 'restaurant', name: 'Lavash №1', label: { en: 'Dolgoprudny', hy: 'Դոլգոպրուդնի', ru: 'Долгопрудный', de: 'Dolgoprudny' },
+    cover: 'r-lavash-1', logo: 'logo-lavash-1', instagram: 'lavash.dol',
+    concept: {
+      en: 'Armenian cuisine with tradition and warmth, with banquet and VIP halls.',
+      hy: 'Հայկական խոհանոց՝ ավանդույթներով և ջերմությամբ, բանկետային և VIP սրահներով։',
+      ru: 'Армянская кухня с традициями и теплом, банкетным и VIP-залами.',
+      de: 'Armenische Küche mit Tradition und Wärme, mit Bankett- und VIP-Sälen.',
+    },
+    facts: [
+      { label: cuisine, value: { en: 'Armenian', hy: 'Հայկական', ru: 'Армянская', de: 'Armenisch' } },
+      { label: { en: 'City', hy: 'Քաղաք', ru: 'Город', de: 'Stadt' }, value: { en: 'Dolgoprudny, Russia', hy: 'Դոլգոպրուդնի, Ռուսաստան', ru: 'Долгопрудный, Россия', de: 'Dolgoprudny, Russland' } },
+      { label: { en: 'Halls', hy: 'Սրահներ', ru: 'Залы', de: 'Säle' }, value: { en: 'Banquet · VIP', hy: 'Բանկետային · VIP', ru: 'Банкетный · VIP', de: 'Bankett · VIP' } },
+    ],
+    pieces: [{ photo: 'r-lavash-1-1', work: 'ruffled-vase' }, { photo: 'r-lavash-1-2', work: 'wide-bowl' }, { photo: 'r-lavash-1-3', work: 'tulip-pot' }],
+  },
+]
 
 export const inCategory = (p: Product, c: Category) =>
   c === 'limited' || c === 'unique' ? p.kind === c : p.category === c

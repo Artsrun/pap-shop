@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Cta, Photo, Section, WorkCard } from '@/components/ui'
+import { Band, Cta, Photo, WorkTile } from '@/components/ui'
 import { commissionHref, products, works } from '@/lib/content'
 import { href, tr } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
@@ -27,6 +27,7 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
 
   const piece3d = pieceForWork(work.slug)
   const forSale = products.find((p) => p.slug === work.product && p.stock > 0)
+  const more = works.filter((w) => w.slug !== work.slug).slice(0, 3)
   const facts = [
     [t.art.collection, work.collection && tr(work.collection, lang)],
     [t.art.year, work.year],
@@ -36,7 +37,7 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
 
   return (
     <>
-      <section className="product wrap">
+      <section className="product">
         <div className="gallery">
           {work.photos.map((src, i) => (
             <Photo key={src} src={src} alt={tr(work.title, lang)} sizes="(max-width: 860px) 100vw, 55vw" eager={i === 0} />
@@ -44,15 +45,16 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
         </div>
         <div className="buy">
           <p className="label">
-            {work.categories.map((c, i) => (
+            <Link href={href(lang, '/art')}>{t.nav.art}</Link>
+            {work.categories.map((c) => (
               <span key={c}>
-                {i > 0 && ' · '}
+                {' · '}
                 <Link href={href(lang, `/art/c/${c}`)}>{t.art.cats[c]}</Link>
               </span>
             ))}
             {work.unique && ` · ${t.shop.unique}`}
           </p>
-          <h1>{tr(work.title, lang)}</h1>
+          <h1 className="display">{tr(work.title, lang)}</h1>
           {facts.length > 0 && (
             <dl className="facts">
               {facts.map(([k, v]) => (
@@ -64,36 +66,25 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
             </dl>
           )}
           {work.story && <p>{tr(work.story, lang)}</p>}
-          <div className="actions">
-            {forSale && (
-              <Cta href={href(lang, `/shop/p/${forSale.slug}`)} kind="buy">
-                {t.art.available}
-              </Cta>
-            )}
+          <div className="row">
+            <Cta plain={!!forSale} href={commissionHref(lang, 'art', work.slug)}>
+              {t.art.similar}
+            </Cta>
+            {forSale && <Cta href={href(lang, `/shop/p/${forSale.slug}`)}>{t.art.available}</Cta>}
             {piece3d && (
-              <Cta href={href(lang, `/art/customize?p=${piece3d.id}`)} kind="alt">
+              <Cta plain href={href(lang, `/art/customize?p=${piece3d.id}`)}>
                 {cfgDict[lang].view3d}
               </Cta>
             )}
-            <Cta href={commissionHref(lang, 'art', work.slug)} kind={forSale ? 'alt' : 'ink'}>
-              {t.art.similar}
-            </Cta>
           </div>
         </div>
       </section>
-      <Section title={t.art.more}>
-        <div className="grid">
-          {works
-            .filter((w) => w.slug !== work.slug)
-            .slice(0, 4)
-            .map((w) => (
-              <WorkCard key={w.slug} work={w} lang={lang} />
-            ))}
-        </div>
-        <p className="more">
-          <Link href={href(lang, '/art')}>{t.home.all} →</Link>
-        </p>
-      </Section>
+      <Band title={t.art.more} count={more.length} link={{ href: href(lang, '/art'), label: t.home.all }} />
+      <section className="works works--3">
+        {more.map((w) => (
+          <WorkTile key={w.slug} href={href(lang, `/art/${w.slug}`)} photo={w.photos[0]} title={tr(w.title, lang)} />
+        ))}
+      </section>
     </>
   )
 }

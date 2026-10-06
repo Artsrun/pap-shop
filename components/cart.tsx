@@ -57,14 +57,13 @@ export const useCart = () => useSyncExternalStore(subscribe, snapshot, () => EMP
 
 export const CartLink = ({ href, label }: { href: string; label: string }) => {
   const count = Object.values(useCart()).reduce((a, b) => a + b, 0)
+  const name = count ? `${label} (${count})` : label
   return (
-    <Link className="cart-link" href={href} aria-label={count ? `${label} (${count})` : label}>
-      {/* bag icon on phones, word on desktop */}
-      <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M6 7h12l1 13H5L6 7Z" />
-        <path d="M9 7a3 3 0 0 1 6 0" />
+    <Link className="btn btn--icon cart-btn" href={href} aria-label={name} title={name}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+        <path d="M5 8h14l-1 13H6L5 8z" />
+        <path d="M9 8V6a3 3 0 0 1 6 0v2" />
       </svg>
-      <span className="cart-label">{label}</span>
       {count > 0 && <b>{count}</b>}
     </Link>
   )
@@ -74,11 +73,11 @@ type AddProps = { slug: string; stock: number; cartHref: string; t: Pick<Dict['s
 
 export const AddToCart = ({ slug, stock, cartHref, t }: AddProps) =>
   useCart()[slug] ? (
-    <Link className="btn buy" href={cartHref}>
-      {t.added}
+    <Link className="btn btn--acid btn--lg" href={cartHref}>
+      {t.added} →
     </Link>
   ) : (
-    <button className="btn buy" type="button" disabled={stock < 1} onClick={() => setQty(slug, 1)}>
+    <button className="btn btn--acid btn--lg" type="button" disabled={stock < 1} onClick={() => setQty(slug, 1)}>
       {t.add}
     </button>
   )
@@ -120,9 +119,11 @@ export const CartView = ({ items, lang, t }: { items: CartItem[]; lang: Locale; 
       <p className="total">
         {t.total} <b>{money(total, lang)}</b>
       </p>
-      <a className="btn buy" href={mailto(t.subject, order.join('\n'))}>
-        {t.send}
-      </a>
+      <div className="row">
+        <a className="btn btn--acid btn--lg" href={mailto(t.subject, order.join('\n'))}>
+          {t.send} →
+        </a>
+      </div>
       <p className="note">{t.note}</p>
     </>
   )
