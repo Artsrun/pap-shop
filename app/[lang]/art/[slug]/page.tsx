@@ -4,6 +4,8 @@ import { Cta, Photo, Section, WorkCard } from '@/components/ui'
 import { commissionHref, products, works } from '@/lib/content'
 import { href, tr } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
+import { cfgDict } from '@/lib/cfg-dict'
+import { pieceForWork } from '@/lib/pieces'
 import { getT } from '@/lib/t'
 
 export const dynamicParams = false
@@ -23,6 +25,7 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
   const work = find((await params).slug)
   if (!work) notFound()
 
+  const piece3d = pieceForWork(work.slug)
   const forSale = products.find((p) => p.slug === work.product && p.stock > 0)
   const facts = [
     [t.art.collection, work.collection && tr(work.collection, lang)],
@@ -65,6 +68,11 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
             {forSale && (
               <Cta href={href(lang, `/shop/p/${forSale.slug}`)} kind="buy">
                 {t.art.available}
+              </Cta>
+            )}
+            {piece3d && (
+              <Cta href={href(lang, `/art/customize?p=${piece3d.id}`)} kind="alt">
+                {cfgDict[lang].view3d}
               </Cta>
             )}
             <Cta href={commissionHref(lang, 'art', work.slug)} kind={forSale ? 'alt' : 'ink'}>

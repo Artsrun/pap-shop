@@ -67,6 +67,7 @@ const en = {
     similar: 'Commission a similar piece',
     all: 'All',
     more: 'More works',
+    startFrom: 'Start from an existing work',
     empty: 'New works are on their way.',
     cats: {
       sculptural: 'Sculptural',
@@ -275,6 +276,7 @@ const hy: Overrides = {
     similar: 'Պատվիրել նմանատիպ աշխատանք',
     all: 'Բոլորը',
     more: 'Այլ աշխատանքներ',
+    startFrom: 'Սկսել առկա աշխատանքից',
     empty: 'Նոր աշխատանքները շուտով կլինեն։',
     cats: {
       sculptural: 'Քանդակային',
@@ -480,6 +482,7 @@ const ru: Overrides = {
     similar: 'Заказать похожую работу',
     all: 'Все',
     more: 'Другие работы',
+    startFrom: 'Начать с существующей работы',
     empty: 'Новые работы скоро появятся.',
     cats: {
       sculptural: 'Скульптура',
@@ -685,6 +688,7 @@ const de: Overrides = {
     similar: 'Ein ähnliches Stück in Auftrag geben',
     all: 'Alle',
     more: 'Weitere Arbeiten',
+    startFrom: 'Mit einer bestehenden Arbeit beginnen',
     empty: 'Neue Arbeiten sind unterwegs.',
     cats: {
       sculptural: 'Skulptural',

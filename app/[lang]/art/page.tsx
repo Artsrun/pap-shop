@@ -1,6 +1,7 @@
 import { ArtGrid, Band } from '@/components/blocks'
 import { Cta, Hero, Section } from '@/components/ui'
 import { commissionHref } from '@/lib/content'
+import { href } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
 import { getT } from '@/lib/t'
 
@@ -19,7 +20,12 @@ const Art = async () => {
       <ArtGrid />
       <Section title={t.art.commissionTitle} className="custom">
         <p>{t.art.commissionText}</p>
-        <Cta href={commissionHref(lang, 'art')}>{t.art.cta}</Cta>
+        <div className="actions">
+          <Cta href={commissionHref(lang, 'art')}>{t.art.cta}</Cta>
+          <Cta href={href(lang, '/art/customize')} kind="alt">
+            {t.art.startFrom}
+          </Cta>
+        </div>
       </Section>
       <Band />
     </>

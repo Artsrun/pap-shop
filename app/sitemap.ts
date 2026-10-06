@@ -8,6 +8,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     '/',
     '/restaurants',
     '/art',
+    '/art/customize',
     '/tiles',
     '/shop',
     '/about',

@@ -5,6 +5,8 @@ import { Cta, Photo, priceLabel } from '@/components/ui'
 import { commissionHref, products } from '@/lib/content'
 import { href, tr } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
+import { cfgDict } from '@/lib/cfg-dict'
+import { pieceForWork } from '@/lib/pieces'
 import { mailto } from '@/lib/site'
 import { getT } from '@/lib/t'
 
@@ -26,6 +28,7 @@ const ProductPage = async ({ params }: PageProps<'/[lang]/shop/p/[slug]'>) => {
   if (!p) notFound()
 
   const s = t.shop
+  const piece3d = pieceForWork(p.work)
   const name = tr(p.title, lang)
   const details = [
     [s.material, p.material && tr(p.material, lang)],
@@ -57,6 +60,11 @@ const ProductPage = async ({ params }: PageProps<'/[lang]/shop/p/[slug]'>) => {
             </a>
           )}
         </div>
+        {piece3d && (
+          <p>
+            <Link href={href(lang, `/art/customize?p=${piece3d.id}`)}>{cfgDict[lang].view3d} →</Link>
+          </p>
+        )}
         <p className="note">{s.handmade}</p>
         {details.length > 0 && (
           <dl className="facts">
