@@ -12,7 +12,7 @@ Her full manual: https://claude.ai/code/artifact/c51301cb-d870-4e58-983b-1e2b1e8
 2. Work on a branch: use `v3` until v3 is merged; after that, a short new branch per task (`text-prices`, `new-restaurant-ararat`). Never commit to `main` unless she says "publish" / "make it live".
 3. Make the change. Texts must exist in all 3 languages (en, hy, ru). Translate from whatever language she gives; flag translations you are unsure about.
 4. Check before pushing: `npx tsc --noEmit && npm run lint && npm run build`. Never push a red build.
-5. Push, then give her the preview link: `https://pap-shop-git-<branch>-artsruns-projects.vercel.app/<page>` (ready about 1 minute after the push; Vercel login may be asked). For a visual change, also screenshot the page at 390px and 1280px wide and show it to her.
+5. Push, then give her the preview link: `https://pap-shop-git-<branch>-artsruns-projects.vercel.app/<page>` (public, no login; ready about 1 minute after the push). For a visual change, also screenshot the page at 390px and 1280px wide and show it to her.
 6. "Publish" / "make it live" = open a pull request from the branch into `main` and merge it. `main` deploys to https://pap-shop.vercel.app.
 7. "Undo" = `git revert` the commit(s) on the same branch and push. Never force-push and never rewrite history.
 
