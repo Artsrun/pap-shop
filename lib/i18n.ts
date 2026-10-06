@@ -1,7 +1,7 @@
-export const locales = ['en', 'hy', 'ru', 'de'] as const
+export const locales = ['en', 'hy', 'ru'] as const
 export type Locale = (typeof locales)[number]
 
-export const localeNames: Record<Locale, string> = { en: 'English', hy: 'Հայերեն', ru: 'Русский', de: 'Deutsch' }
+export const localeNames: Record<Locale, string> = { en: 'English', hy: 'Հայերեն', ru: 'Русский' }
 
 export const isLocale = (v: string): v is Locale => (locales as readonly string[]).includes(v)
 

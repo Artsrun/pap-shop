@@ -4,7 +4,7 @@ Next.js 16 (App Router), React 19, TypeScript and plain CSS. No UI, CSS or state
 v3 = Lusine's Claude Design (`app/lusine.css`, verbatim) on top of the v2 functionality.
 
 **Editing manual (texts, photos, products, restaurants, design, publishing):** https://claude.ai/code/artifact/c51301cb-d870-4e58-983b-1e2b1e8ab14c
-The site has four worlds (Restaurants, Art & Decor, Tiles and Shop) in four languages (EN · HY · RU · DE).
+The site has four worlds (Restaurants, Art & Decor, Tiles and Shop) in three languages (EN · HY · RU; German was dropped for now, restore it from git history).
 The old site ([ruben-pap](https://github.com/Artsrun/ruben-pap)) stays live until the domain moves.
 
 ## Two journeys, kept apart
@@ -17,9 +17,9 @@ Buttons: black (`btn--acid`) = the main action on a page, outlined = secondary.
 ## Structure
 
 ```
-app/[lang]/…              pages. English lives at /, the other languages under /hy /ru /de
+app/[lang]/…              pages. English lives at /, the other languages under /hy /ru
 app/api/commission        form → email (Resend). Without a key it answers 503 and the form offers a prefilled email
-app/sitemap.ts            every page × 4 languages, with hreflang
+app/sitemap.ts            every page × 3 languages, with hreflang
 proxy.ts                  language: saved choice (cookie) → browser language → English
 app/lusine.css            ← Lusine's design system (tokens, type, every section)
 app/v3.css                additions: cart/product/form/3D styles, mobile title overlay, header hide-on-scroll
@@ -71,5 +71,5 @@ Vercel: import the repo (framework preset: Next.js) and add the env vars. The pr
 - [ ] Checkout provider (Stripe / Shopify / an Armenian gateway). The cart currently sends the order by email.
 - [ ] Real prices, availability, dimensions and stories (the seed data marks every piece as one-of-a-kind, price on request)
 - [ ] Tile case studies, with photos
-- [ ] Native-speaker review of the HY / RU / DE texts
+- [ ] Native-speaker review of the HY / RU texts
 - [ ] Currency switch (AMD / USD / EUR); uploads larger than 4 MB (direct to storage)

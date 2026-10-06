@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { basePath, href, localeNames, locales, type Locale } from '@/lib/i18n'
 import { pad } from './ui'
 
-const codes: Record<Locale, string> = { en: 'ENG', hy: 'ARM', ru: 'RUS', de: 'DEU' }
+const codes: Record<Locale, string> = { en: 'ENG', hy: 'ARM', ru: 'RUS' }
 
 const isCurrent = (path: string, item: string) => path === item || path.startsWith(`${item}/`)
 
