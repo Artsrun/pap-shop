@@ -22,14 +22,47 @@ export const Nav = ({ lang, items, menu }: NavProps) => {
   const path = basePath(usePathname())
   const ref = useRef<HTMLElement>(null)
 
-  // client navigation keeps the layout mounted, so close the sheet on route change
+  // client navigation keeps the layout mounted, so close the sheet and show the header on route change
   useEffect(() => {
     try {
       ref.current?.hidePopover()
     } catch {
       // not open, or popover unsupported
     }
+    ref.current?.closest('.site-header')?.removeAttribute('data-hidden')
   }, [path])
+
+  // phones/tablets: header slides away while scrolling down, comes back on any scroll up
+  useEffect(() => {
+    const header = ref.current?.closest<HTMLElement>('.site-header')
+    if (!header) return
+    const small = matchMedia('(max-width: 1100px)')
+    let last = scrollY
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const y = scrollY
+      const delta = y - last
+      if (Math.abs(delta) < 8) return // ignore jitter and iOS bounce
+      last = y
+      let menuOpen = false
+      try {
+        menuOpen = ref.current?.matches(':popover-open') ?? false
+      } catch {
+        // :popover-open unsupported
+      }
+      header.toggleAttribute('data-hidden', small.matches && delta > 0 && y > header.offsetHeight * 2 && !menuOpen)
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(raf)
+      header.removeAttribute('data-hidden')
+    }
+  }, [])
 
   return (
     <>
