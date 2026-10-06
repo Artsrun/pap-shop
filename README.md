@@ -1,34 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ruben Pap Ceramics: v2
 
-## Getting Started
+Next.js 16 (App Router), React 19, TypeScript and plain CSS. No UI, CSS or state libraries.
+The site has four worlds (Restaurants, Art & Decor, Tiles and Shop) in four languages (EN · HY · RU · DE).
+The old site ([ruben-pap](https://github.com/Artsrun/ruben-pap)) stays live until the domain moves.
 
-First, run the development server:
+## Two journeys, kept apart
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Ready-made:** `/shop` → product → cart → order. The order goes by email until a checkout provider is chosen.
+- **Commission:** Restaurants / Art & Decor / Tiles → `/commission?type=restaurant|art|tiles|custom&ref=<slug>` → email to the studio.
+
+The button styles follow the journey: the turquoise pill is for the shop, the ink button with → is for a commission.
+
+## Structure
+
+```
+app/[lang]/…              pages. English lives at /, the other languages under /hy /ru /de
+app/api/commission        form → email (Resend). Without a key it answers 503 and the form offers a prefilled email
+app/sitemap.ts            every page × 4 languages, with hreflang
+proxy.ts                  language: saved choice (cookie) → browser language → English
+components/ui.tsx         pure blocks (Photo, Cta, Hero, cards)
+components/blocks.tsx     server blocks (Band, ShopGrid, ProjectGrid, ProjectDetail)
+components/nav.tsx        menu (native popover on phones) + language switch
+components/cart.tsx       localStorage cart (useSyncExternalStore), CartLink, AddToCart, CartView
+components/commission-form.tsx
+lib/content.ts            ← works, shop products, projects (seed data from the old site)
+lib/dict.ts               ← every text; `en` is the source, the other languages override it
+lib/site.ts               ← contacts (same values as the old config.js)
+public/img, public/fonts  photos and self-hosted fonts (no Google requests)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm install
+npm run dev      # http://localhost:3000
+npm run lint
+npm run build
+```
 
-## Learn More
+Copy `.env.example` to `.env.local` and fill in `RESEND_API_KEY` for the form to send email.
 
-To learn more about Next.js, take a look at the following resources:
+## Content
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Prices:** set `price` (AMD) on a product in `lib/content.ts`. `null` shows "Price on request" and an "Ask about this piece" email link instead of Add to cart.
+- **Case studies:** add them to `projects`. They appear at `/restaurants/<slug>` or `/tiles/<slug>`.
+- **Texts:** `lib/dict.ts`. A missing translation falls back to English.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
+Vercel: import the repo (framework preset: Next.js) and add the env vars. The proxy, the API route and the static pages need no extra config.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Not done yet
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [ ] Checkout provider (Stripe / Shopify / an Armenian gateway). The cart currently sends the order by email.
+- [ ] Real prices, availability, dimensions and stories (the seed data marks every piece as one-of-a-kind, price on request)
+- [ ] Restaurant and tile case studies, with photos
+- [ ] Port the 3D configurator from ruben-pap
+- [ ] Native-speaker review of the HY / RU / DE texts
+- [ ] Currency switch (AMD / USD / EUR); uploads larger than 4 MB (direct to storage)
