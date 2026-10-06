@@ -58,9 +58,14 @@ export const useCart = () => useSyncExternalStore(subscribe, snapshot, () => EMP
 export const CartLink = ({ href, label }: { href: string; label: string }) => {
   const count = Object.values(useCart()).reduce((a, b) => a + b, 0)
   return (
-    <Link className="cart-link" href={href}>
-      {label}
-      {count > 0 && <b aria-label={`(${count})`}>{count}</b>}
+    <Link className="cart-link" href={href} aria-label={count ? `${label} (${count})` : label}>
+      {/* bag icon on phones, word on desktop */}
+      <svg className="ic" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 7h12l1 13H5L6 7Z" />
+        <path d="M9 7a3 3 0 0 1 6 0" />
+      </svg>
+      <span className="cart-label">{label}</span>
+      {count > 0 && <b>{count}</b>}
     </Link>
   )
 }

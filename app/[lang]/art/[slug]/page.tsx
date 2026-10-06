@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Cta, Photo, Section, WorkCard } from '@/components/ui'
 import { commissionHref, products, works } from '@/lib/content'
@@ -39,6 +40,15 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
           ))}
         </div>
         <div className="buy">
+          <p className="label">
+            {work.categories.map((c, i) => (
+              <span key={c}>
+                {i > 0 && ' · '}
+                <Link href={href(lang, `/art/c/${c}`)}>{t.art.cats[c]}</Link>
+              </span>
+            ))}
+            {work.unique && ` · ${t.shop.unique}`}
+          </p>
           <h1>{tr(work.title, lang)}</h1>
           {facts.length > 0 && (
             <dl className="facts">
@@ -63,7 +73,7 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
           </div>
         </div>
       </section>
-      <Section title={t.home.all}>
+      <Section title={t.art.more}>
         <div className="grid">
           {works
             .filter((w) => w.slug !== work.slug)
@@ -72,6 +82,9 @@ const Artwork = async ({ params }: PageProps<'/[lang]/art/[slug]'>) => {
               <WorkCard key={w.slug} work={w} lang={lang} />
             ))}
         </div>
+        <p className="more">
+          <Link href={href(lang, '/art')}>{t.home.all} →</Link>
+        </p>
       </Section>
     </>
   )

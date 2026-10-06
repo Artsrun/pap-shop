@@ -43,6 +43,7 @@ Copy `.env.example` to `.env.local` and fill in `RESEND_API_KEY` for the form to
 ## Content
 
 - **Prices:** set `price` (AMD) on a product in `lib/content.ts`. `null` shows "Price on request" and an "Ask about this piece" email link instead of Add to cart.
+- **Categories:** a shop product has one `category` (`kind` covers Limited Editions / One-of-a-Kind). An artwork has `categories` (`sculptural · vases · objects · interior · experimental · limited`, several allowed). Only categories that have something in them get a filter chip and a sitemap entry; empty ones still open (`/shop/cups`, `/art/c/interior`).
 - **Case studies:** add them to `projects`. They appear at `/restaurants/<slug>` or `/tiles/<slug>`.
 - **Texts:** `lib/dict.ts`. A missing translation falls back to English.
 

@@ -51,6 +51,19 @@ export const Section = ({ title, className = '', children }: { title?: string; c
   </section>
 )
 
+type Chip = { href: string; label: string; current?: boolean }
+
+/** Category filter row (shop + art). */
+export const Chips = ({ label, items }: { label: string; items: Chip[] }) => (
+  <nav className="chips" aria-label={label}>
+    {items.map((i) => (
+      <Link key={i.href} href={i.href} aria-current={i.current ? 'page' : undefined}>
+        {i.label}
+      </Link>
+    ))}
+  </nav>
+)
+
 export const Tags = ({ items }: { items: string[] }) => (
   <ul className="tags">
     {items.map((i) => (

@@ -1,8 +1,22 @@
 import Link from 'next/link'
-import { categories, commissionHref, inCategory, products, projectHref, projects, type Category, type Project } from '@/lib/content'
+import {
+  artCategories,
+  categories,
+  commissionHref,
+  filledArtCategories,
+  filledCategories,
+  inCategory,
+  products,
+  projectHref,
+  projects,
+  works,
+  type ArtCategory,
+  type Category,
+  type Project,
+} from '@/lib/content'
 import { href, tr, type L } from '@/lib/i18n'
 import { getT } from '@/lib/t'
-import { Cta, Photo, ProductCard, Section } from './ui'
+import { Chips, Cta, Photo, ProductCard, Section, WorkCard } from './ui'
 
 // Server blocks that read the locale themselves.
 
@@ -93,24 +107,48 @@ export const ProjectDetail = async ({ project: p }: { project: Project }) => {
   )
 }
 
+export const ArtGrid = async ({ category }: { category?: ArtCategory }) => {
+  const { lang, t } = await getT()
+  const list = category ? works.filter((w) => w.categories.includes(category)) : works
+  const chips = artCategories.filter((c) => c === category || filledArtCategories.includes(c))
+  return (
+    <Section>
+      <Chips
+        label={t.nav.art}
+        items={[
+          { href: href(lang, '/art'), label: t.art.all, current: !category },
+          ...chips.map((c) => ({ href: href(lang, `/art/c/${c}`), label: t.art.cats[c], current: c === category })),
+        ]}
+      />
+      {list.length ? (
+        <div className="grid editorial">
+          {list.map((w) => (
+            <WorkCard key={w.slug} work={w} lang={lang} />
+          ))}
+        </div>
+      ) : (
+        <p className="empty">{t.art.empty}</p>
+      )}
+    </Section>
+  )
+}
+
 export const ShopGrid = async ({ category }: { category?: Category }) => {
   const { lang, t } = await getT()
   const list = category ? products.filter((p) => inCategory(p, category)) : products
+  const chips = categories.filter((c) => c === category || filledCategories.includes(c))
   return (
     <>
-      <section className="sec wrap shop-head">
+      <section className="sec wrap page-head">
         <h1>{category ? t.shop.cats[category] : t.shop.title}</h1>
         <p className="lead">{t.shop.text}</p>
-        <nav className="chips" aria-label={t.nav.shop}>
-          <Link href={href(lang, '/shop')} aria-current={!category ? 'page' : undefined}>
-            {t.shop.all}
-          </Link>
-          {categories.map((c) => (
-            <Link key={c} href={href(lang, `/shop/${c}`)} aria-current={c === category ? 'page' : undefined}>
-              {t.shop.cats[c]}
-            </Link>
-          ))}
-        </nav>
+        <Chips
+          label={t.nav.shop}
+          items={[
+            { href: href(lang, '/shop'), label: t.shop.all, current: !category },
+            ...chips.map((c) => ({ href: href(lang, `/shop/${c}`), label: t.shop.cats[c], current: c === category })),
+          ]}
+        />
       </section>
       <Section>
         {list.length ? (

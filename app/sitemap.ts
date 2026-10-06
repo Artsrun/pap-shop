@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { categories, products, projectHref, projects, works } from '@/lib/content'
+import { filledArtCategories, filledCategories, products, projectHref, projects, works } from '@/lib/content'
 import { basePath, href, locales } from '@/lib/i18n'
 import { siteUrl } from '@/lib/site'
 
@@ -13,7 +13,8 @@ const sitemap = (): MetadataRoute.Sitemap => {
     '/about',
     '/contact',
     '/commission',
-    ...categories.map((c) => `/shop/${c}`),
+    ...filledCategories.map((c) => `/shop/${c}`),
+    ...filledArtCategories.map((c) => `/art/c/${c}`),
     ...works.map((w) => `/art/${w.slug}`),
     ...products.map((p) => `/shop/p/${p.slug}`),
     ...projects.map((p) => basePath(projectHref('en', p))),

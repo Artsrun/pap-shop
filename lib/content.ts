@@ -5,6 +5,12 @@ import { href, tr } from './i18n'
 
 export const categories = ['cups', 'mugs', 'plates', 'bowls', 'vases', 'decor', 'limited', 'unique'] as const
 export type Category = (typeof categories)[number]
+export const isCategory = (v: string): v is Category => categories.includes(v as Category)
+
+/** Art & Decor filters; a work can sit in several. "One of a kind" is a tag, not a category. */
+export const artCategories = ['sculptural', 'vases', 'objects', 'interior', 'experimental', 'limited'] as const
+export type ArtCategory = (typeof artCategories)[number]
+export const isArtCategory = (v: string): v is ArtCategory => artCategories.includes(v as ArtCategory)
 
 export const projectTypes = ['restaurant', 'art', 'tiles', 'custom'] as const
 export type ProjectType = (typeof projectTypes)[number]
@@ -13,6 +19,8 @@ export const isProjectType = (v: unknown): v is ProjectType => projectTypes.incl
 export type Work = {
   slug: string
   title: L
+  categories: ArtCategory[]
+  unique?: boolean
   photos: string[] // file names in /public/img, without .jpg
   year?: number
   collection?: L
@@ -61,13 +69,14 @@ const title = {
   bronze: { en: 'Bronze vessel', hy: 'Բրոնզե անոթ', ru: 'Бронзовый сосуд', de: 'Bronzegefäß' },
 } satisfies Record<string, L>
 
+// Categories below are a first pass from the photos: Ruben/Lusine to curate.
 export const works: Work[] = [
-  { slug: 'ruffled-vase', title: title.ruffled, photos: ['work-01'], product: 'ruffled-vase' },
-  { slug: 'pierced-bowl', title: title.pierced, photos: ['work-02', 'work-08'], product: 'pierced-bowl' },
-  { slug: 'tulip-pot', title: title.tulip, photos: ['work-03', 'work-07'], product: 'tulip-pot' },
-  { slug: 'folded-vase', title: title.folded, photos: ['work-04'], product: 'folded-vase' },
-  { slug: 'wide-bowl', title: title.wide, photos: ['work-05'], product: 'wide-bowl' },
-  { slug: 'bronze-vessel', title: title.bronze, photos: ['work-06'], product: 'bronze-vessel' },
+  { slug: 'ruffled-vase', title: title.ruffled, categories: ['vases'], unique: true, photos: ['work-01'], product: 'ruffled-vase' },
+  { slug: 'pierced-bowl', title: title.pierced, categories: ['objects', 'sculptural'], unique: true, photos: ['work-02', 'work-08'], product: 'pierced-bowl' },
+  { slug: 'tulip-pot', title: title.tulip, categories: ['objects'], unique: true, photos: ['work-03', 'work-07'], product: 'tulip-pot' },
+  { slug: 'folded-vase', title: title.folded, categories: ['vases', 'sculptural'], unique: true, photos: ['work-04'], product: 'folded-vase' },
+  { slug: 'wide-bowl', title: title.wide, categories: ['objects'], unique: true, photos: ['work-05'], product: 'wide-bowl' },
+  { slug: 'bronze-vessel', title: title.bronze, categories: ['sculptural', 'experimental'], unique: true, photos: ['work-06'], product: 'bronze-vessel' },
 ]
 
 const unique = { kind: 'unique', price: null, stock: 1 } as const
@@ -85,6 +94,10 @@ export const projects: Project[] = []
 
 export const inCategory = (p: Product, c: Category) =>
   c === 'limited' || c === 'unique' ? p.kind === c : p.category === c
+
+// Only filled categories get a chip and a sitemap entry; empty ones still resolve (no 404s on old links).
+export const filledCategories = categories.filter((c) => products.some((p) => inCategory(p, c)))
+export const filledArtCategories = artCategories.filter((c) => works.some((w) => w.categories.includes(c)))
 
 export const projectHref = (lang: Locale, p: Project) =>
   href(lang, `/${p.kind === 'restaurant' ? 'restaurants' : 'tiles'}/${p.slug}`)
