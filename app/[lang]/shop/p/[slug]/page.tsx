@@ -38,7 +38,7 @@ const ProductPage = async ({ params }: PageProps<'/[lang]/shop/p/[slug]'>) => {
   ].filter(([, v]) => v)
 
   return (
-    <section className="product wrap">
+    <section className="product">
       <div className="gallery">
         {p.photos.map((src, i) => (
           <Photo key={src} src={src} alt={name} sizes="(max-width: 860px) 100vw, 55vw" eager={i === 0} />
@@ -46,26 +46,27 @@ const ProductPage = async ({ params }: PageProps<'/[lang]/shop/p/[slug]'>) => {
       </div>
       <div className="buy">
         <p className="label">
+          <Link href={href(lang, '/shop')}>{t.nav.shop}</Link> ·{' '}
           <Link href={href(lang, `/shop/${p.category}`)}>{s.cats[p.category]}</Link>
           {p.kind === 'unique' && ` · ${s.unique}`}
         </p>
-        <h1>{name}</h1>
+        <h1 className="display">{name}</h1>
         <p className="price">{priceLabel(p, lang, s)}</p>
-        <div className="actions">
+        <div className="row">
           {p.price !== null ? (
             <AddToCart slug={p.slug} stock={p.stock} cartHref={href(lang, '/cart')} t={s} />
           ) : (
-            <a className="btn buy" href={mailto(name, `${s.ask}: ${name}`)}>
-              {s.ask}
+            <a className="btn btn--acid btn--lg" href={mailto(name, `${s.ask}: ${name}`)}>
+              {s.ask} →
             </a>
           )}
+          {piece3d && (
+            <Cta plain href={href(lang, `/art/customize?p=${piece3d.id}`)}>
+              {cfgDict[lang].view3d}
+            </Cta>
+          )}
         </div>
-        {piece3d && (
-          <p>
-            <Link href={href(lang, `/art/customize?p=${piece3d.id}`)}>{cfgDict[lang].view3d} →</Link>
-          </p>
-        )}
-        <p className="note">{s.handmade}</p>
+        <p className="fine">{s.handmade}</p>
         {details.length > 0 && (
           <dl className="facts">
             {details.map(([k, v]) => (
@@ -77,15 +78,17 @@ const ProductPage = async ({ params }: PageProps<'/[lang]/shop/p/[slug]'>) => {
           </dl>
         )}
         {p.work && (
-          <p>
-            <Link href={href(lang, `/art/${p.work}`)}>{s.story} →</Link>
-          </p>
+          <Link className="link" href={href(lang, `/art/${p.work}`)}>
+            {s.story} →
+          </Link>
         )}
         <div className="custom">
           <p>{s.variant}</p>
-          <Cta href={commissionHref(lang, 'custom', p.slug)} kind="alt">
-            {s.customCta}
-          </Cta>
+          <div className="row">
+            <Cta plain href={commissionHref(lang, 'custom', p.slug)}>
+              {s.customCta}
+            </Cta>
+          </div>
         </div>
       </div>
     </section>

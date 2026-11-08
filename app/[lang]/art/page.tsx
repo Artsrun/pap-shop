@@ -1,5 +1,5 @@
-import { ArtGrid, Band } from '@/components/blocks'
-import { Cta, Hero, Section } from '@/components/ui'
+import { ArtGrid, CommissionCta, PHero } from '@/components/blocks'
+import { Cta, Feature } from '@/components/ui'
 import { commissionHref } from '@/lib/content'
 import { href } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
@@ -12,22 +12,20 @@ export const generateMetadata = async () => {
 
 const Art = async () => {
   const { lang, t } = await getT()
+  const a = t.art
   return (
     <>
-      <Hero title={t.art.title} text={t.art.text} photo="work-04">
-        <Cta href={commissionHref(lang, 'art')}>{t.art.cta}</Cta>
-      </Hero>
+      <PHero label={`03 — ${t.nav.art}`} title={a.title} text={a.text} photo="v3-art">
+        <Cta href={commissionHref(lang, 'art')}>{a.cta}</Cta>
+      </PHero>
       <ArtGrid />
-      <Section title={t.art.commissionTitle} className="custom">
-        <p>{t.art.commissionText}</p>
-        <div className="actions">
-          <Cta href={commissionHref(lang, 'art')}>{t.art.cta}</Cta>
-          <Cta href={href(lang, '/art/customize')} kind="alt">
-            {t.art.startFrom}
-          </Cta>
-        </div>
-      </Section>
-      <Band />
+      <Feature photo="v3-art-feature" title={a.commissionTitle} text={a.commissionText}>
+        <Cta href={commissionHref(lang, 'art')}>{a.cta}</Cta>
+        <Cta plain href={href(lang, '/art/customize')}>
+          {a.startFrom}
+        </Cta>
+      </Feature>
+      <CommissionCta />
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { PHero } from '@/components/blocks'
 import { Configurator } from '@/components/configurator/configurator'
 import { cfgDict } from '@/lib/cfg-dict'
 import { works } from '@/lib/content'
@@ -23,14 +24,14 @@ const Customize = async () => {
     }),
   )
   return (
-    <section className="sec wrap">
-      <p className="label">{t.nav.art}</p>
-      <h1>{c.title}</h1>
-      <p className="lead">{c.text}</p>
-      <Suspense fallback={<p className="empty">{c.loading}</p>}>
-        <Configurator lang={lang} t={c} names={names} />
-      </Suspense>
-    </section>
+    <>
+      <PHero small label={`03 — ${t.nav.art}`} title={c.title} text={c.text} />
+      <section className="pad">
+        <Suspense fallback={<p className="empty">{c.loading}</p>}>
+          <Configurator lang={lang} t={c} names={names} />
+        </Suspense>
+      </section>
+    </>
   )
 }
 

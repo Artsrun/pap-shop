@@ -40,7 +40,7 @@ const Specific = ({ type, t }: { type: ProjectType | ''; t: T }) => {
           <Field label={t.venue} name="venue" />
           <Field label={t.city} name="city" />
           <fieldset className="checks">
-            <legend>{t.pieces}</legend>
+            <legend className="label">{t.pieces}</legend>
             {Object.entries(t.piecesList).map(([k, v]) => (
               <label key={k}>
                 <input type="checkbox" name="pieces" value={k} /> {v}
@@ -111,18 +111,24 @@ export const CommissionForm = ({ t, type: initial, reference }: Props) => {
     setStatus('failed')
   }
 
-  if (status === 'sent') return <p className="notice">{t.sent}</p>
+  if (status === 'sent')
+    return (
+      <p className="notice" role="status">
+        {t.sent}
+      </p>
+    )
 
   return (
-    <form className="form" onSubmit={onSubmit}>
-      <fieldset className="types">
-        <legend>{t.type}</legend>
-        {projectTypes.map((k) => (
-          <label key={k}>
-            <input type="radio" name="type" value={k} checked={type === k} onChange={() => setType(k)} required />
-            <span>{t.types[k]}</span>
-          </label>
-        ))}
+    <form onSubmit={onSubmit}>
+      <fieldset>
+        <legend className="label">{t.type}</legend>
+        <div className="radios">
+          {projectTypes.map((k) => (
+            <label key={k}>
+              <input type="radio" name="type" value={k} checked={type === k} onChange={() => setType(k)} required /> {t.types[k]}
+            </label>
+          ))}
+        </div>
       </fieldset>
 
       {reference && (
@@ -159,7 +165,7 @@ export const CommissionForm = ({ t, type: initial, reference }: Props) => {
       </label>
 
       <fieldset>
-        <legend>{t.you}</legend>
+        <legend className="label">{t.you}</legend>
         <div className="grid2">
           <Field label={t.name} name="name" autoComplete="name" maxLength={80} required />
           <Field label={t.email} name="email" type="email" autoComplete="email" />
@@ -183,9 +189,11 @@ export const CommissionForm = ({ t, type: initial, reference }: Props) => {
         </p>
       )}
 
-      <button className="btn ink" type="submit" disabled={status === 'sending'}>
-        {status === 'sending' ? t.sending : t.send} <span aria-hidden="true">→</span>
-      </button>
+      <div>
+        <button className="btn btn--acid btn--lg" type="submit" disabled={status === 'sending'}>
+          {status === 'sending' ? t.sending : t.send} <span aria-hidden="true">→</span>
+        </button>
+      </div>
     </form>
   )
 }

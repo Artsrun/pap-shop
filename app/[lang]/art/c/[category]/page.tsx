@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
-import { ArtGrid } from '@/components/blocks'
-import { Cta, Section } from '@/components/ui'
+import { ArtGrid, PHero } from '@/components/blocks'
+import { Cta, Feature } from '@/components/ui'
 import { artCategories, commissionHref, isArtCategory } from '@/lib/content'
+import { href } from '@/lib/i18n'
 import { pageMeta } from '@/lib/meta'
 import { getT } from '@/lib/t'
 
@@ -18,17 +19,17 @@ const ArtCategoryPage = async ({ params }: PageProps<'/[lang]/art/c/[category]'>
   const { lang, t } = await getT()
   const { category } = await params
   if (!isArtCategory(category)) notFound()
+  const a = t.art
   return (
     <>
-      <section className="sec wrap page-head">
-        <p className="label">{t.nav.art}</p>
-        <h1>{t.art.cats[category]}</h1>
-      </section>
+      <PHero small label={`03 — ${t.nav.art}`} title={a.cats[category]} />
       <ArtGrid category={category} />
-      <Section title={t.art.commissionTitle} className="custom">
-        <p>{t.art.commissionText}</p>
-        <Cta href={commissionHref(lang, 'art')}>{t.art.cta}</Cta>
-      </Section>
+      <Feature photo="v3-art-feature" title={a.commissionTitle} text={a.commissionText}>
+        <Cta href={commissionHref(lang, 'art')}>{a.cta}</Cta>
+        <Cta plain href={href(lang, '/art/customize')}>
+          {a.startFrom}
+        </Cta>
+      </Feature>
     </>
   )
 }

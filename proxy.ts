@@ -33,6 +33,12 @@ export const proxy = (req: NextRequest) => {
     return remember(NextResponse.redirect(url), 'en')
   }
 
+  // German is switched off for now: old /de links land on the same page in the visitor's language
+  if (first === 'de') {
+    url.pathname = pathname.slice(3) || '/'
+    return NextResponse.redirect(url)
+  }
+
   if (isLocale(first)) {
     const res = NextResponse.next()
     return req.cookies.get(COOKIE)?.value === first ? res : remember(res, first)
